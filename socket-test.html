@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SyncSpace Socket Test</title>
+</head>
+<body>
+    <h2>SyncSpace Socket.IO Test</h2>
+    <button onclick="connectSocket()">Connect</button>
+    <button onclick="joinRoom()">Join Room</button>
+
+    <pre id="output"></pre>
+
+    <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+
+    <script>
+        const token = "YOUR_JWT_TOKEN";
+        const roomId = "6ab5034f2cf84d0c7bd48b56";
+
+        let socket;
+
+        function log(message) {
+            document.getElementById("output").textContent += message + "\\n";
+        }
+
+        function connectSocket() {
+            socket = io("http://localhost:5000", {
+                auth: {
+                    token: token
+                }
+            });
+
+            socket.on("connect", () => {
+                log("? Socket connected: " + socket.id);
+            });
+
+            socket.on("connect_error", (error) => {
+                log("? Connection error: " + error.message);
+            });
+
+            socket.on("room-error", (data) => {
+                log("? Room error: " + data.message);
+            });
+
+            socket.on("user-joined", (data) => {
+                log("?? User joined: " + data.name);
+            });
+
+            socket.on("user-left", (data) => {
+                log("?? User left: " + data.name);
+            });
+        }
+
+        function joinRoom() {
+            if (!socket) {
+                log("? Connect first");
+                return;
+            }
+
+            socket.emit("join-room", roomId);
+            log("?? Join-room request sent");
+        }
+    </script>
+</body>
+</html>
