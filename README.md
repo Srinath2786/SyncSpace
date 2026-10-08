@@ -1,192 +1,485 @@
-# SyncSpace
+# 🚀 SyncSpace — Real-Time Collaborative Workspace
 
-SyncSpace is a real-time collaborative workspace platform for teams to create, organize, and work together inside shared rooms. The backend powers authentication, workspace management, room collaboration, document syncing, and live Socket.IO events for presence and editing activity.
+**SyncSpace** is a real-time collaborative workspace platform designed for teams to create shared workspaces, organize collaboration rooms, and work together through live code and document editing.
 
-## Project Overview
+The backend provides secure authentication, workspace and room management, persistent document storage, real-time collaboration using **Socket.IO**, presence tracking, activity events, and interactive **Swagger/OpenAPI** documentation.
 
-The SyncSpace backend provides:
-- JWT-based authentication
-- Workspace and room management
-- Real-time collaboration using Socket.IO
-- Shared document handling per room
-- Presence and activity tracking
-- OpenAPI documentation for API discovery
+---
 
-## Features
+## ✨ Highlights
 
-- User registration and login
-- Workspace creation and member management
-- Room creation and organization inside workspaces
-- Document updates per room
-- Live code editing events
-- Cursor and typing notifications
-- Online-user and presence detection
-- Structured API and Swagger documentation
+* 🔐 JWT-based authentication
+* 👥 Workspace and member management
+* 🏠 Room-based collaboration
+* ⚡ Real-time communication with Socket.IO
+* 💻 Live collaborative code editing
+* 🖱️ Cursor movement synchronization
+* ⌨️ Typing indicators
+* 🟢 Online-user and presence tracking
+* 📄 Persistent room documents
+* 📊 Workspace and room activity tracking
+* 📚 Swagger/OpenAPI API documentation
+* 🛡️ Middleware-based authentication and validation
+* 🗄️ MongoDB persistence using Mongoose
 
-## Architecture
+---
+
+## 🎯 Project Overview
+
+SyncSpace is built around the idea of providing teams with a shared digital workspace where members can collaborate in real time.
+
+A typical workflow looks like:
+
+```text
+User
+ │
+ ▼
+Authentication
+ │
+ ▼
+Workspace
+ │
+ ├── Members
+ │
+ └── Rooms
+      │
+      ├── Shared Document
+      │
+      ├── Live Code Editing
+      │
+      ├── Cursor Updates
+      │
+      ├── Typing Indicators
+      │
+      └── Presence Tracking
+```
+
+The backend manages both **persistent application data** through MongoDB and **real-time collaboration events** through Socket.IO.
+
+---
+
+## 🏗️ Architecture
+
+```text
+                         ┌─────────────────────┐
+                         │   SyncSpace Client  │
+                         │  Web / Frontend UI  │
+                         └──────────┬──────────┘
+                                    │
+                         HTTP / REST API
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │    Express.js       │
+                         │      Server         │
+                         └──────────┬──────────┘
+                                    │
+                ┌───────────────────┼───────────────────┐
+                │                   │                   │
+                ▼                   ▼                   ▼
+        ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+        │ Authentication│    │ REST APIs    │    │ Socket.IO    │
+        │    & JWT      │    │ Controllers  │    │ Real-Time    │
+        └──────────────┘    └──────────────┘    └──────┬───────┘
+                │                   │                   │
+                └───────────────────┼───────────────────┘
+                                    ▼
+                           ┌─────────────────┐
+                           │    Services     │
+                           │ Business Logic  │
+                           └────────┬────────┘
+                                    │
+                                    ▼
+                           ┌─────────────────┐
+                           │ MongoDB /       │
+                           │    Mongoose     │
+                           └─────────────────┘
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Technology            | Purpose                    |
+| --------------------- | -------------------------- |
+| **Node.js**           | JavaScript runtime         |
+| **Express.js**        | Backend web framework      |
+| **MongoDB**           | Database                   |
+| **Mongoose**          | MongoDB ODM                |
+| **Socket.IO**         | Real-time communication    |
+| **JWT**               | Authentication             |
+| **CORS**              | Cross-origin communication |
+| **Swagger / OpenAPI** | API documentation          |
+| **JavaScript**        | Backend development        |
+
+---
+
+## 📁 Project Structure
 
 ```text
 syncspace-backend/
+│
 ├── app.js
 ├── server.js
-├── config/
-├── controllers/
-├── middleware/
-├── models/
-├── routes/
-├── services/
-├── sockets/
-├── validators/
-├── utils/
-├── docs/
-├── public/
-├── tests/
-├── .env
-├── .env.example
+├── package.json
 ├── README.md
-└── package.json
+│
+├── config/
+│   └── database configuration
+│
+├── controllers/
+│   └── request handling and business operations
+│
+├── middleware/
+│   └── authentication, validation and error handling
+│
+├── models/
+│   └── MongoDB / Mongoose models
+│
+├── routes/
+│   └── REST API routes
+│
+├── services/
+│   └── application business logic
+│
+├── sockets/
+│   └── Socket.IO real-time event handling
+│
+├── validators/
+│   └── request validation
+│
+├── utils/
+│   └── reusable utility functions
+│
+├── docs/
+│   └── OpenAPI / Swagger documentation
+│
+├── public/
+│   └── public assets
+│
+├── tests/
+│   └── backend tests
+│
+├── .env.example
+└── .gitignore
 ```
 
-## Tech Stack
+---
 
-- Node.js
-- Express.js
-- MongoDB + Mongoose
-- Socket.IO
-- JWT Authentication
-- CORS
-- Swagger/OpenAPI documentation
+# 🔐 Authentication
 
-## Installation
+SyncSpace uses **JSON Web Tokens (JWT)** to secure protected resources.
 
-1. Install dependencies
+### Authentication Flow
+
+```text
+Register
+   │
+   ▼
+Login
+   │
+   ▼
+JWT Token
+   │
+   ▼
+Authorization Header
+   │
+   ▼
+Protected API / Socket Connection
+```
+
+Authenticated requests use:
+
+```http
+Authorization: Bearer <JWT_TOKEN>
+```
+
+---
+
+# 👥 Workspace Management
+
+Users can create and manage collaborative workspaces.
+
+A workspace can contain:
+
+* Workspace name
+* Description
+* Owner
+* Members
+* Multiple collaboration rooms
+* Activity information
+
+Example:
+
+```text
+Workspace
+│
+├── Owner
+├── Members
+│
+├── Room: Java Practice
+├── Room: Project Development
+└── Room: Team Discussion
+```
+
+---
+
+# 🏠 Room Collaboration
+
+Rooms provide isolated collaboration spaces inside a workspace.
+
+Each room can maintain:
+
+* Room name
+* Workspace association
+* Room members
+* Programming language
+* Shared document
+* Real-time collaboration state
+
+---
+
+# ⚡ Real-Time Collaboration
+
+SyncSpace uses **Socket.IO** to provide real-time collaboration between connected users.
+
+Multiple users can join the same room and receive updates without refreshing the page.
+
+### Real-Time Flow
+
+```text
+User A
+   │
+   │ code-change
+   ▼
+Socket.IO Server
+   │
+   ├──────────────► User B
+   │
+   └──────────────► User C
+```
+
+This enables a collaborative editing experience similar to modern online development tools.
+
+---
+
+# 🔄 Socket.IO Events
+
+## Client → Server
+
+| Event           | Description                              |
+| --------------- | ---------------------------------------- |
+| `join-room`     | Join a collaboration room                |
+| `leave-room`    | Leave a collaboration room               |
+| `code-change`   | Send code/document changes               |
+| `cursor-change` | Send cursor position                     |
+| `typing`        | Notify other users about typing activity |
+
+## Server → Client
+
+| Event             | Description                        |
+| ----------------- | ---------------------------------- |
+| `user-joined`     | Notifies users when someone joins  |
+| `user-left`       | Notifies users when someone leaves |
+| `code-change`     | Broadcasts document changes        |
+| `cursor-change`   | Synchronizes cursor position       |
+| `typing`          | Sends typing notifications         |
+| `online-users`    | Provides active users              |
+| `presence-update` | Updates user presence              |
+| `room-error`      | Reports room-related errors        |
+
+---
+
+# 🗄️ Database Design
+
+## User
+
+```text
+User
+├── name
+├── email
+├── password
+├── avatar
+└── timestamps
+```
+
+## Workspace
+
+```text
+Workspace
+├── name
+├── description
+├── owner
+├── members
+└── timestamps
+```
+
+## Room
+
+```text
+Room
+├── name
+├── workspace
+├── createdBy
+├── members
+├── language
+└── timestamps
+```
+
+## Document
+
+```text
+Document
+├── room
+├── content
+├── language
+├── updatedBy
+└── timestamps
+```
+
+## Activity
+
+```text
+Activity
+├── user
+├── workspace
+├── room
+├── action
+├── details
+└── timestamps
+```
+
+---
+
+# 🚀 Getting Started
+
+## Prerequisites
+
+Make sure the following are installed:
+
+* **Node.js**
+* **npm**
+* **MongoDB**
+* **Git**
+
+Check your installations:
+
+```bash
+node --version
+npm --version
+mongod --version
+```
+
+---
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/Srinath2786/SyncSpace.git
+```
+
+Move into the backend directory:
+
+```bash
+cd SyncSpace
+```
+
+> If the backend is maintained in a separate directory or branch, switch to the appropriate backend branch before continuing.
+
+---
+
+## 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-2. Create your environment file
+---
 
-```bash
-cp .env.example .env
+## 3. Configure Environment Variables
+
+Create a `.env` file based on `.env.example`.
+
+```env
+PORT=5000
+
+MONGO_URI=mongodb://127.0.0.1:27017/syncspace
+
+JWT_SECRET=change_this_to_a_secure_secret
+
+CLIENT_URL=http://localhost:5173
+
+NODE_ENV=development
 ```
 
-3. Start the backend
+### ⚠️ Security
+
+Never commit your real `.env` file or production secrets to GitHub.
+
+Use:
+
+```text
+.env
+```
+
+in your `.gitignore`.
+
+---
+
+## 4. Start MongoDB
+
+Make sure MongoDB is running locally.
+
+The default database used by SyncSpace is:
+
+```text
+syncspace
+```
+
+---
+
+## 5. Start the Backend
+
+### Production-style start
 
 ```bash
 npm start
 ```
 
-4. For development mode with watcher
+### Development mode
 
 ```bash
 npm run dev
 ```
 
-## Environment Variables
+The backend should be available at:
 
-```env
-PORT=5000
-MONGO_URI=mongodb://127.0.0.1:27017/syncspace
-JWT_SECRET=syncspace_super_secret_change_this
-CLIENT_URL=http://localhost:5173
-NODE_ENV=development
+```text
+http://localhost:5000
 ```
 
-## API Documentation
+---
 
-Swagger documentation is available at:
+# 📚 API Documentation
+
+SyncSpace provides interactive API documentation using Swagger/OpenAPI.
+
+After starting the backend, open:
 
 ```text
 http://localhost:5000/api-docs
 ```
 
-The raw OpenAPI document is available at:
+The raw OpenAPI specification is available at:
 
 ```text
 http://localhost:5000/openapi.json
 ```
 
-## Database Design
+Swagger can be used to:
 
-### User
-- name
-- email
-- password
-- avatar
-- timestamps
-
-### Workspace
-- name
-- description
-- owner
-- members
-- timestamps
-
-### Room
-- name
-- workspace
-- createdBy
-- members
-- language
-- timestamps
-
-### Document
-- room
-- content
-- language
-- updatedBy
-- timestamps
-
-### Activity
-- user
-- workspace
-- room
-- action
-- details
-- timestamps
-
-## Socket.IO Events
-
-### Client-to-server
-- join-room
-- leave-room
-- code-change
-- cursor-change
-- typing
-
-### Server-to-client
-- user-joined
-- user-left
-- code-change
-- cursor-change
-- typing
-- online-users
-- presence-update
-- room-error
-
-## Screenshots
-
-Add screenshots of the dashboard, collaboration editor, and room UI here.
-
-## Future Enhancements
-
-- Rich text editor integration
-- Real-time collaboration conflict resolution
-- Team roles and permissions
-- Cloud storage and file exports
-- Advanced analytics and activity timeline
-- Notification system and mentions
-
-## Team / Contributors
-
-This backend was developed as part of the SyncSpace collaboration platform and can be extended by a full-stack team or contributors working on:
-- frontend UI
-- real-time editor integration
-- database optimization
-- API security and rate limiting
-- analytics and monitoring
-
-
-srinath@test.com
-
+* Explore available endpoints
+* Understand request parameters
+* Inspect responses
+* Test APIs
+* Review authentication requir
