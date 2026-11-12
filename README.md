@@ -1,4 +1,5 @@
-# SyncSpace
+
+.0# SyncSpace
 
 SyncSpace is a real-time collaborative workspace platform for teams to create, organize, and work together inside shared rooms. The backend powers authentication, workspace management, room collaboration, document syncing, and live Socket.IO events for presence and editing activity.
 
