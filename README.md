@@ -6,7 +6,7 @@ SyncSpace is a real-time collaborative workspace platform for teams to create, o
 ## Project Overview
 
 The SyncSpace backend provides:
-- JWT-based authentication
+- JWT-based authentication 
 - Workspace and room management
 - Real-time collaboration using Socket.IO
 - Shared document handling per room
